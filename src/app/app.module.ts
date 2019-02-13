@@ -17,6 +17,7 @@ import {environment} from '../environments/environment';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {StoreModule} from '@ngrx/store';
 import {livreReducer} from './modules/biblio/store/reducers/livre.reducer';
+import { reducers, metaReducers } from './reducers';
 
 registerLocaleData(en);
 
@@ -38,9 +39,7 @@ registerLocaleData(en);
     TableModule,
     DataTableModule,
     PaginatorModule,
-    StoreModule.forRoot({
-      livres: livreReducer
-    }),
+    StoreModule.forRoot(reducers, { metaReducers }),
     !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
