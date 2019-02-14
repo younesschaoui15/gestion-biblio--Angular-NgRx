@@ -16,9 +16,7 @@ import { HeaderComponent } from './components/header/header.component';
 import {environment} from '../environments/environment';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {StoreModule} from '@ngrx/store';
-import {livreReducer} from './modules/biblio/store/reducers/livre.reducer';
 import { reducers, metaReducers } from './reducers';
-
 registerLocaleData(en);
 
 @NgModule({
