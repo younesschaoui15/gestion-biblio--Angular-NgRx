@@ -1,0 +1,98 @@
+<div class="container-fluid col-11">
+  <div class="row">
+    <div class="col-6">
+      <button (click)="openNewBookDrawer()" nz-button nzType="default" style="margin-bottom: 10px"><i nz-icon type="plus-circle" theme="twotone"></i> New book </button>
+    </div>
+
+    <nz-drawer [nzClosable]="false" [nzVisible]="isDrawerVisible" nzPlacement="right" nzTitle="New Book" (nzOnClose)="closeNewBookDrawer()">
+      <div class="col-12">
+        <form nz-form>
+            <nz-form-item>
+              <!-- <nz-form-label nzFor="id">ID</nz-form-label> -->
+              <nz-form-control>
+                  <input nz-input name="id" placeholder="ISBN" [(ngModel)]="id">
+              </nz-form-control>
+            </nz-form-item >
+            <nz-form-item>
+              <!-- <nz-form-label nzFor="name">Name</nz-form-label> -->
+              <nz-form-control>
+                  <input nz-input name="name" placeholder="Name" [(ngModel)]="name">
+                </nz-form-control>
+            </nz-form-item >
+            <nz-form-item>
+              <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
+              <nz-form-control>
+                  <input nz-input name="author" placeholder="Author" [(ngModel)]="author">
+                </nz-form-control>
+            </nz-form-item >
+            <nz-form-item>
+              <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
+              <nz-form-control>
+                  <nz-date-picker name="publish_date" [(ngModel)]="publishDate" (ngModelChange)="onChangeDate($event)"></nz-date-picker>
+                </nz-form-control>
+            </nz-form-item >
+
+            <nz-form-item>
+              <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
+              <nz-form-control>
+                <nz-switch name="status" [(ngModel)]="status" [nzControl]="false" nzCheckedChildren="Disponible" nzUnCheckedChildren="Epuisé"></nz-switch>
+                <!--<nz-select name="status" [(ngModel)]="status" (ngModelChange)="onChangeStatus($event)">-->
+                  <!--<nz-option nzValue="Disponible" nzLabel="Disponible"></nz-option>-->
+                  <!--<nz-option nzValue="Epuisé" nzLabel="Epuisé"></nz-option>-->
+                <!--</nz-select>              -->
+              </nz-form-control>
+            </nz-form-item >
+
+              <!--<nz-form-item>-->
+                <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
+              <!--<nz-form-control>-->
+                <!--<nz-upload nzAction="https://jsonplaceholder.typicode.com/posts/">-->
+                  <!--<button nz-button>-->
+                    <!--<i nz-icon type="upload"></i><span>Click to Upload</span>-->
+                  <!--</button>-->
+                <!--</nz-upload>-->
+              <!--</nz-form-control>-->
+            <!--</nz-form-item >-->
+          </form>
+      </div>
+      <div class="col-12">
+        <button nz-button nzType="primary" (click)="addNewBook()" [nzLoading]="isLoadingOne">Add</button>
+      </div>
+    </nz-drawer>
+
+
+    <div class="col-12">
+      <p-table [value]="livres$ | async ">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>ISBN</th>
+            <th>Livre</th>
+            <th>Name</th>
+            <th>Author</th>
+            <th>Publish date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-livre>
+          <tr>
+            <td>{{livre.id}}</td>
+            <td> <nz-avatar nz-popover [nzContent]="templ" [nzShape]="'circle'" [nzSize]="40" [nzSrc]="livre.image"></nz-avatar>
+              <ng-template #templ>
+                <nz-avatar [nzShape]="'square'" [nzSize]="350" [nzSrc]="livre.image"></nz-avatar>
+              </ng-template>
+            </td>
+            <td>{{livre.name}}</td>
+            <td>{{livre.author}}</td>
+            <td>{{livre.publish_date | date: 'dd/MM/yyy'}}</td>
+            <td [ngStyle]="{'color' : livre.status =='Disponible' ? 'green' : 'red'}"><b>{{livre.status}}</b></td>
+            <td style="text-align: center">
+              <a [routerLink]="['edit', livre.id]" nz-button nzType="default" style="margin: 2px"><i nz-icon type="edit" theme="outline"></i></a>
+              <button (click)="deleteBook(livre.id)" nz-button nzType="danger" style="margin: 2px"><i nz-icon type="delete" theme="outline"></i></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

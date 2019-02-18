@@ -1,0 +1,45 @@
+  <nz-card class="col-10 offset-1" [nzBordered]="true">
+      <h3 style="margin-bottom: 20px"><i nz-icon type="book" theme="fill" style="color: #2560a1"></i> Book : {{livre.name}}</h3>
+      <form nz-form class="col-10">
+        <nz-form-item>
+           <!--<nz-form-label nzFor="id">ID</nz-form-label>-->
+          <nz-form-control>
+            <input nz-input [disabled]="true" name="id" placeholder="Id" [(ngModel)]="livre.id">
+          </nz-form-control>
+        </nz-form-item >
+        <nz-form-item>
+          <!-- <nz-form-label nzFor="name">Name</nz-form-label> -->
+          <nz-form-control>
+            <input nz-input name="name" placeholder="Name" [(ngModel)]="livre.name">
+          </nz-form-control>
+        </nz-form-item >
+        <nz-form-item>
+          <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
+          <nz-form-control>
+            <input nz-input name="author" placeholder="Author" [(ngModel)]="livre.author">
+          </nz-form-control>
+        </nz-form-item >
+        <nz-form-item>
+          <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
+          <nz-form-control>
+            <nz-date-picker name="publish_date" [(ngModel)]="livre.publish_date" (ngModelChange)="onChangeDate($event)"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item >
+        <nz-form-item>
+          <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
+          <nz-form-control>
+            <nz-select name="status" [(ngModel)]="livre.status" (ngModelChange)="onChangeStatus($event)">
+              <nz-option nzValue="Disponible" nzLabel="Disponible"></nz-option>
+              <nz-option nzValue="Epuisé" nzLabel="Epuisé"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
+          <nz-form-control>
+            <button (click)="updateBook()" nz-button nzType="default" style="margin-bottom: 10px"><i nz-icon type="edit" theme="twotone"></i> Update </button>
+          </nz-form-control>
+        </nz-form-item >
+      </form>
+  </nz-card>
