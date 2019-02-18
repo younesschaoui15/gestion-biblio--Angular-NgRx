@@ -19,7 +19,6 @@ export class EditLivreComponent implements OnInit {
 
   id: string;
   livre: Livre;
-  livres$;
 
   constructor(private biblioServices: BiblioService,
               private msg: NzMessageService,
@@ -29,20 +28,11 @@ export class EditLivreComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => this.id = params.get('id'));
-    /*this.livre = this.livreService.getOneBook(this.id);*/
     this.store.select(livreModuleSelectors.selectOneLivre(this.id)).subscribe(data => this.livre = data);
-    this.livres$ = this.store.select(livreModuleSelectors.selectLivres);
   }
 
   updateBook() {
-    /*this.livreService.updateBook(this.livre);*/
-    /*this.livres$.subscribe( data => updatedLivres = data.slice() );*/
-
-    const updatedLivre = _.update(this.livres$,
-                                   _.findIndex(this.livres$, {id: this.livre.id}),
-                                   () => this.livre);
-
-    this.store.dispatch(new UpdateLivre({livre: updatedLivre}));
+    this.store.dispatch(new UpdateLivre({livre: {id: this.livre.id, changes: this.livre}}));
 
     this.msg.create('success', 'The book was updated successfully');
     setTimeout(() => {

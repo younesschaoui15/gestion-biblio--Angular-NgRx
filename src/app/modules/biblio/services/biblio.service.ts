@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Livre} from '../models/livre';
-import {Observable, of} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 
 // import { Subject } from 'rxjs';
 
@@ -9,7 +9,7 @@ import {Observable, of} from 'rxjs';
 })
 export class BiblioService {
 
-  /*livresSubject = new Subject();*/
+  livresSubject = new Subject();
 
   livres: Livre[] = [
     {
@@ -40,17 +40,18 @@ export class BiblioService {
 
   addNewBook(book: Livre) {
     this.livres.push(book);
-    /*this.livresSubject.next();*/
+    // return of(true);
+    this.livresSubject.next(this.livres);
   }
 
   updateBook(book: Livre) {
     const i = this.livres.findIndex((liv => liv.id === book.id));
     this.livres[i] = book;
-    /*this.livresSubject.next();*/
+    this.livresSubject.next(this.livres);
   }
 
   deleteBook(isbn) {
     this.livres = this.livres.filter(b => b.id !== isbn);
-    /*this.livresSubject.next();*/
+    this.livresSubject.next(this.livres);
   }
 }

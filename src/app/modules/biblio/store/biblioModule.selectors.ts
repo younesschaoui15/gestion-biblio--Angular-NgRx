@@ -12,6 +12,11 @@ export const selectLivres = createSelector(
   fromBiblioReducer.selectAll
 );
 
+export const selectIsLivresLoadedSuccess = createSelector(
+  selectBiblioState,
+  s1 => s1.isBiblioLoaded
+);
+
 export const selectOneLivre = (id) => createSelector(
   selectBiblioState,
   s1 => s1.entities[id]
