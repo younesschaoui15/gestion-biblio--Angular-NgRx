@@ -17,6 +17,7 @@ import {environment} from '../environments/environment';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {StoreModule} from '@ngrx/store';
 import { reducers, metaReducers } from './reducers';
+import {EffectsModule} from '@ngrx/effects';
 registerLocaleData(en);
 
 @NgModule({
@@ -38,6 +39,7 @@ registerLocaleData(en);
     DataTableModule,
     PaginatorModule,
     StoreModule.forRoot(reducers, { metaReducers }),
+    EffectsModule.forRoot([]),
     !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
