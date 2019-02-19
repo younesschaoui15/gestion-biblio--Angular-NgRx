@@ -5,7 +5,7 @@ import { BiblioRoutingModule } from './biblio-routing.module';
 import { LivresComponent } from './components/livres/livres.component';
 import {TableModule} from 'primeng/table';
 import {NgZorroAntdModule, NzInputModule, NzDatePickerModule, NzSelectModule} from 'ng-zorro-antd';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { EditLivreComponent } from './components/edit-livre/edit-livre.component';
 import {BiblioService} from './services/biblio.service';
 import { StoreModule } from '@ngrx/store';
@@ -22,6 +22,7 @@ import { BiblioEffects } from './store/biblio.effects';
     TableModule,
     NgZorroAntdModule,
     FormsModule,
+    ReactiveFormsModule,
     StoreModule.forFeature('biblioModuleState', fromBiblioModule.BiblioReducer),
     /* 1st arg: this module state, 2nd arg: this module reducer */
     EffectsModule.forFeature([BiblioEffects]),

@@ -1,12 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NzMessageService} from 'ng-zorro-antd';
 import {Livre} from '../../models/livre';
-import {Router} from '@angular/router';
-import {Store} from '@ngrx/store';
-import {AppState} from '../../../../reducers';
-import * as biblioModuleSelectors from '../../store/biblioModule.selectors';
 import {BiblioService} from '../../services/biblio.service';
-import {AddLivre, DeleteLivre, LoadLivresFail, LoadLivresReq, LoadLivresSuccess} from '../../store/biblio.actions';
+import {BiblioStoreService} from '../../services/biblio-store.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import * as BiblioValidators from '../../validators/biblio.validators';
 
 @Component({
   selector: 'app-livres',
@@ -16,67 +14,89 @@ import {AddLivre, DeleteLivre, LoadLivresFail, LoadLivresReq, LoadLivresSuccess}
 export class LivresComponent implements OnInit, OnDestroy {
 
   isDrawerVisible = false;
-
-  // fields
-  id: string;
-  name: string;
-  author: string;
-  publishDate: string;
-  status = true;
-
+  isLoadingOne = false;
+  newLivre: Livre = {id: '', name: '', author: '', publish_date: '', image: '', status: ''};
   livres: Livre[] = [];
   livres$;
+  addLivreForm: FormGroup;
 
   constructor(private msg: NzMessageService,
               private biblioServices: BiblioService,
-              private router: Router,
-              private store: Store<AppState>) {
+              private formBuilder: FormBuilder,
+              private biblioStoreServices: BiblioStoreService) {
   }
 
   ngOnInit() {
-    this.getBooks();
+    this.livres$ = this.biblioStoreServices.getLivres();
     /* to  view results */
     this.biblioServices.livresSubject.subscribe(data => console.log('BOOKS', data));
+
+    /* form with FormBuilder */
+    this.addLivreForm = this.formBuilder.group({
+      id: ['', [Validators.required]],
+      title: ['', [Validators.required, Validators.minLength(3), BiblioValidators.titleReg(/hhh/)]],
+      author: [''],
+      image: [''],
+      publishDate: [''],
+      status: [''],
+      password: this.formBuilder.group({
+        pw: [''],
+        coPw: ['']
+      }, {validators: BiblioValidators.password})
+    });
+
+    /* Conditional validation */
+    this.addLivreForm.get('title').valueChanges.subscribe((data) => {
+      const author = this.addLivreForm.get('author');
+      data.length > 0 ? author.setValidators(Validators.required) : author.clearValidators();
+      author.updateValueAndValidity();
+    });
+
+    /* form with FormGroup */
+    // addLivreForm = new FormGroup({
+    //   id: new FormControl(),
+    //   title: new FormControl(),
+    //   author: new FormControl(),
+    //   image: new FormControl(),
+    //   publishDate: new FormControl(),
+    //   status: new FormControl()
+    // });
   }
 
   ngOnDestroy(): void {
   }
 
-  getBooks() {
-    this.store.dispatch(new LoadLivresReq());
-    this.livres$ = this.store.select(biblioModuleSelectors.selectLivres);
-    this.store.dispatch(new LoadLivresSuccess());
+  onSubmit() {
+    console.log('form', this.addLivreForm.value);
   }
 
+  /*Add a new book*/
   addNewBook() {
-    const newLivre: Livre = {
-      id: this.id, name: this.name, author: this.author, publish_date: this.publishDate, status: (this.status ? 'Disponible' : 'Epuisé')
-    };
-
-    this.store.dispatch(new AddLivre({livre: newLivre}));
+    this.isLoadingOne = true;
+    this.biblioStoreServices.addLivre({...this.newLivre});
 
     this.msg.create('success', 'A new book was added successfully');
     setTimeout(() => {
+      this.isLoadingOne = false;
       this.closeNewBookDrawer();
     }, 1000);
   }
 
-  deleteBook(isbn) {
-    this.store.dispatch(new DeleteLivre({id: isbn}));
+  /*Delete a book*/
+  deleteBook(id) {
+    this.biblioStoreServices.deleteLivre(id);
     this.msg.create('success', 'The book was deleted successfully');
   }
 
+  /*Open and close the drawer*/
   openNewBookDrawer() {
     this.isDrawerVisible = true;
   }
 
   closeNewBookDrawer() {
     this.isDrawerVisible = false;
-    this.id = undefined;
-    this.name = undefined;
-    this.author = undefined;
-    this.publishDate = undefined;
-    this.status = true;
+    this.addLivreForm.reset({ title: '', password: {coPw: ''}});
+    this.newLivre = {id: '', name: '', author: '', publish_date: '', image: '', status: ''};
   }
 
   onChangeDate(result: Date): void {

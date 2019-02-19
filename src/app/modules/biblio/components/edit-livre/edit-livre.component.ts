@@ -9,6 +9,7 @@ import * as livreModuleSelectors from '../../store/biblioModule.selectors';
 import * as _ from 'lodash';
 import {BiblioService} from '../../services/biblio.service';
 import {UpdateLivre} from '../../store/biblio.actions';
+import {BiblioStoreService} from '../../services/biblio-store.service';
 
 @Component({
   selector: 'app-edit-livre',
@@ -22,17 +23,17 @@ export class EditLivreComponent implements OnInit {
 
   constructor(private biblioServices: BiblioService,
               private msg: NzMessageService,
+              private biblioStoreServices: BiblioStoreService,
               private route: ActivatedRoute,
-              private router: Router,
-              private store: Store<AppState>) { }
+              private router: Router) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => this.id = params.get('id'));
-    this.store.select(livreModuleSelectors.selectOneLivre(this.id)).subscribe(data => this.livre = data);
+    this.biblioStoreServices.getOneLivre(this.id).subscribe(data => this.livre = data);
   }
 
   updateBook() {
-    this.store.dispatch(new UpdateLivre({livre: {id: this.livre.id, changes: this.livre}}));
+    this.biblioStoreServices.updateLivre(this.livre);
 
     this.msg.create('success', 'The book was updated successfully');
     setTimeout(() => {
