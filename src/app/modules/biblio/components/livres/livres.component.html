@@ -1,18 +1,22 @@
 <div class="container-fluid col-11">
   <div class="row">
     <div class="col-6">
-      <button (click)="openNewBookDrawer()" nz-button nzType="default" style="margin-bottom: 10px"><i nz-icon
-                                                                                                      type="plus-circle"
-                                                                                                      theme="twotone"></i>
-        New book
+      <button (click)="openNewBookDrawer()" nz-button nzType="default" style="margin-bottom: 10px">
+        <i nz-icon type="plus-circle" theme="twotone"></i>New book</button>
+    </div>
+    <div class="col-6">
+      <button (click)="isGrid=false" nz-button nzType="default" class="float-right">
+        <i nz-icon type="profile" theme="twotone" class="align-middle"></i>
+      </button>
+      <button (click)="isGrid=true" nz-button nzType="default" class="float-right" style="margin-right: 10px">
+        <i nz-icon type="appstore" theme="twotone" class="align-middle"></i>
       </button>
     </div>
 
     <nz-drawer [nzClosable]="false" [nzVisible]="isDrawerVisible" nzPlacement="right" nzTitle="New Book"
                (nzOnClose)="closeNewBookDrawer()">
       <div class="col-12">
-
-        <form [formGroup]="addLivreForm" (submit)="onSubmit()" nz-form>
+        <form [formGroup]="addLivreForm" (ngSubmit)="onSubmit()" nz-form>
 
           <nz-form-item>
             <!-- <nz-form-label nzFor="id">ID</nz-form-label> -->
@@ -31,15 +35,16 @@
           <nz-form-item>
             <!-- <nz-form-label nzFor="name">Name</nz-form-label> -->
             <nz-form-control>
-              <input formControlName="title" nz-input name="name" placeholder="Name"><!--[(ngModel)]="newLivre.name"-->
+              <input formControlName="name" nz-input name="name" placeholder="Title of the book">
+              <!--[(ngModel)]="newLivre.name"-->
             </nz-form-control>
-            <div *ngIf="addLivreForm.get('title').invalid && addLivreForm.get('title').touched">
-              <small *ngIf="addLivreForm.get('title').errors?.required" class="text text-danger">Title field is
+            <div *ngIf="addLivreForm.get('name').invalid && addLivreForm.get('name').touched">
+              <small *ngIf="addLivreForm.get('name').errors?.required" class="text text-danger">Title field is
                 required!
               </small>
-              <small *ngIf="addLivreForm.get('title').errors?.minlength" class="text text-danger">Min length is 3
+              <small *ngIf="addLivreForm.get('name').errors?.minlength" class="text text-danger">Min length is 3
               </small>
-              <small *ngIf="addLivreForm.get('title').errors?.title" class="text text-danger">Title not allowed</small>
+              <small *ngIf="addLivreForm.get('name').errors?.title" class="text text-danger">Title not allowed</small>
             </div>
           </nz-form-item>
 
@@ -56,9 +61,8 @@
           <nz-form-item>
             <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
             <nz-form-control>
-              <nz-date-picker formControlName="publishDate" name="publish_date"
+              <nz-date-picker formControlName="publish_date" name="publish_date"
                               (ngModelChange)="onChangeDate($event)"></nz-date-picker>
-              <!--[(ngModel)]="newLivre.publish_date"-->
             </nz-form-control>
           </nz-form-item>
 
@@ -74,20 +78,24 @@
             </nz-form-control>
           </nz-form-item>
 
-          <nz-form-item formGroupName="password">
-            <nz-form-control>
-              <input formControlName="pw" nz-input name="pw" type="password" placeholder="Password">
-            </nz-form-control>
-            <nz-form-control>
-              <input formControlName="coPw" nz-input name="coPw" type="password" placeholder="Confirm password">
-            </nz-form-control>
-            <div
-              *ngIf="addLivreForm.get('password').invalid && addLivreForm.get('password').get('coPw').value.length>0">
-              <small *ngIf="addLivreForm.get('password').errors?.password" class="text text-danger">Password does not
-                match
-              </small>
-            </div>
-          </nz-form-item>
+          <!-- PASSWORD Group -->
+
+          <!--<nz-form-item formGroupName="password">-->
+          <!--<nz-form-control>-->
+          <!--<input formControlName="pw" nz-input name="pw" type="password" placeholder="Password">-->
+          <!--</nz-form-control>-->
+          <!--<nz-form-control>-->
+          <!--<input formControlName="coPw" nz-input name="coPw" type="password" placeholder="Confirm password">-->
+          <!--</nz-form-control>-->
+          <!--<div-->
+          <!--*ngIf="addLivreForm.get('password').invalid && addLivreForm.get('password').get('coPw').value.length>0">-->
+          <!--<small *ngIf="addLivreForm.get('password').errors?.password" class="text text-danger">Password does not-->
+          <!--match-->
+          <!--</small>-->
+          <!--</div>-->
+          <!--</nz-form-item>-->
+
+          <!-- Image -->
 
           <!--<nz-form-item>-->
           <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
@@ -99,17 +107,35 @@
           <!--</nz-upload>-->
           <!--</nz-form-control>-->
           <!--</nz-form-item >-->
+
           <div class="col-12">
-            <button nz-button nzType="primary" type="submit" (click)="addNewBook()" [nzLoading]="isLoadingOne">Add
+            <button [disabled]="addLivreForm.invalid" nz-button nzType="primary" type="submit"
+                    [nzLoading]="isLoadingOne">Add
             </button>
           </div>
         </form>
       </div>
-
     </nz-drawer>
 
+    <!--Grid-->
+    <div *ngIf="isGrid" class="col-12" align="center">
+      <div class="row">
+        <div class="container col-3" *ngFor="let l of livres$ | async">
+          <img [src]="l.image" alt="img" class="image" style="">
+          <div class="overlay overlayleft">
+            <div class="text" style="font-size: 14px">
+              <span><b>{{l.name}}</b></span><br>
+              <span><b>De: </b>{{l.author}}</span><br>
+              <span><b>Le :</b>{{l.publish_date | date: 'dd/MM/yyy'}}</span><br>
+              <span class="badge" [ngClass]="{'badge-success': l.status=='Disponible', 'badge-secondary': l.status=='Epuisé'}">{{l.status}}</span><br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <div class="col-12">
+    <!--Table-->
+    <div *ngIf="!isGrid" class="col-12">
       <p-table [value]="livres$ | async ">
         <ng-template pTemplate="header">
           <tr>

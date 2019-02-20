@@ -5,6 +5,7 @@ import {BiblioService} from '../../services/biblio.service';
 import {BiblioStoreService} from '../../services/biblio-store.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as BiblioValidators from '../../validators/biblio.validators';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-livres',
@@ -17,8 +18,9 @@ export class LivresComponent implements OnInit, OnDestroy {
   isLoadingOne = false;
   newLivre: Livre = {id: '', name: '', author: '', publish_date: '', image: '', status: ''};
   livres: Livre[] = [];
-  livres$;
+  livres$: Observable<Livre[]>;
   addLivreForm: FormGroup;
+  isGrid = false;
 
   constructor(private msg: NzMessageService,
               private biblioServices: BiblioService,
@@ -31,36 +33,7 @@ export class LivresComponent implements OnInit, OnDestroy {
     /* to  view results */
     this.biblioServices.livresSubject.subscribe(data => console.log('BOOKS', data));
 
-    /* form with FormBuilder */
-    this.addLivreForm = this.formBuilder.group({
-      id: ['', [Validators.required]],
-      title: ['', [Validators.required, Validators.minLength(3), BiblioValidators.titleReg(/hhh/)]],
-      author: [''],
-      image: [''],
-      publishDate: [''],
-      status: [''],
-      password: this.formBuilder.group({
-        pw: [''],
-        coPw: ['']
-      }, {validators: BiblioValidators.password})
-    });
-
-    /* Conditional validation */
-    this.addLivreForm.get('title').valueChanges.subscribe((data) => {
-      const author = this.addLivreForm.get('author');
-      data.length > 0 ? author.setValidators(Validators.required) : author.clearValidators();
-      author.updateValueAndValidity();
-    });
-
-    /* form with FormGroup */
-    // addLivreForm = new FormGroup({
-    //   id: new FormControl(),
-    //   title: new FormControl(),
-    //   author: new FormControl(),
-    //   image: new FormControl(),
-    //   publishDate: new FormControl(),
-    //   status: new FormControl()
-    // });
+    this.initAddLivreForm();
   }
 
   ngOnDestroy(): void {
@@ -68,12 +41,19 @@ export class LivresComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     console.log('form', this.addLivreForm.value);
+    this.addNewBook();
   }
 
   /*Add a new book*/
   addNewBook() {
     this.isLoadingOne = true;
-    this.biblioStoreServices.addLivre({...this.newLivre});
+    if (this.addLivreForm.invalid) {
+      this.msg.create('error', 'This form is invalid, there are some required data!');
+      this.isLoadingOne = false;
+      return;
+    }
+
+    this.biblioStoreServices.addLivre(this.addLivreForm.value);
 
     this.msg.create('success', 'A new book was added successfully');
     setTimeout(() => {
@@ -92,15 +72,45 @@ export class LivresComponent implements OnInit, OnDestroy {
   openNewBookDrawer() {
     this.isDrawerVisible = true;
   }
-
   closeNewBookDrawer() {
     this.isDrawerVisible = false;
-    this.addLivreForm.reset({ title: '', password: {coPw: ''}});
-    this.newLivre = {id: '', name: '', author: '', publish_date: '', image: '', status: ''};
+    this.addLivreForm.reset({name: '', password: {coPw: ''}});
   }
 
   onChangeDate(result: Date): void {
     console.log('Date: ', result);
   }
 
+  /* form with FormBuilder */
+  private initAddLivreForm() {
+    this.addLivreForm = this.formBuilder.group({
+      id: ['', [Validators.required]],
+      name: ['', [Validators.required, Validators.minLength(3), BiblioValidators.titleReg(/hhh/)]],
+      author: [''],
+      image: [''],
+      publish_date: [''],
+      status: [''],
+      // password: this.formBuilder.group({
+      //   pw: [''],
+      //   coPw: ['']
+      // }, {validators: BiblioValidators.password})
+    });
+
+    /* Conditional validation */
+    this.addLivreForm.get('name').valueChanges.subscribe((data) => {
+      const author = this.addLivreForm.get('author');
+      data.length > 0 ? author.setValidators(Validators.required) : author.clearValidators();
+      author.updateValueAndValidity();
+    });
+
+    /* form with FormGroup */
+    // addLivreForm = new FormGroup({
+    //   id: new FormControl(),
+    //   title: new FormControl(),
+    //   author: new FormControl(),
+    //   image: new FormControl(),
+    //   publishDate: new FormControl(),
+    //   status: new FormControl()
+    // });
+  }
 }

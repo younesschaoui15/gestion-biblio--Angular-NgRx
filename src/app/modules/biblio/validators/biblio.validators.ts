@@ -2,7 +2,7 @@ import {AbstractControl, ValidatorFn} from '@angular/forms';
 
 
 export function title(control: AbstractControl): { [key: string]: any } | null {
-  const isNotValid = /i5an/.test(control.value);
+  const isNotValid = /123/.test(control.value);
   return isNotValid ? {title: {value: control.value}} : null;
 }
 
