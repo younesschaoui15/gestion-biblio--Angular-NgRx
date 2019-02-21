@@ -40,7 +40,7 @@ export class LivresComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log('form', this.addLivreForm.value);
+    console.log('FORM', this.addLivreForm.value);
     this.addNewBook();
   }
 

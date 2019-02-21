@@ -13,9 +13,11 @@ import * as fromBiblioModule from './store/biblio.reducer';
 import { BiblioComponent } from './biblio-containers/biblio-container/biblio.component';
 import { EffectsModule } from '@ngrx/effects';
 import { BiblioEffects } from './store/biblio.effects';
+import { LivresTableComponent } from './components/livres-table/livres-table.component';
+import {CarTestService} from './services/car-test-service.service';
 
 @NgModule({
-  declarations: [BiblioComponent, LivresComponent, EditLivreComponent],
+  declarations: [BiblioComponent, LivresComponent, EditLivreComponent, LivresTableComponent],
   imports: [
     CommonModule,
     BiblioRoutingModule,
@@ -27,6 +29,6 @@ import { BiblioEffects } from './store/biblio.effects';
     /* 1st arg: this module state, 2nd arg: this module reducer */
     EffectsModule.forFeature([BiblioEffects]),
   ],
-  providers: [BiblioService]
+  providers: [BiblioService, CarTestService]
 })
 export class BiblioModule { }

@@ -2,7 +2,8 @@
   <div class="row">
     <div class="col-6">
       <button (click)="openNewBookDrawer()" nz-button nzType="default" style="margin-bottom: 10px">
-        <i nz-icon type="plus-circle" theme="twotone"></i>New book</button>
+        <i nz-icon type="plus-circle" theme="twotone"></i>New book
+      </button>
     </div>
     <div class="col-6">
       <button (click)="isGrid=false" nz-button nzType="default" class="float-right">
@@ -118,7 +119,8 @@
     </nz-drawer>
 
     <!--Grid-->
-    <div *ngIf="isGrid" class="col-12" align="center">
+    <!--<div *ngIf="isGrid" class="col-12" align="center">-->
+    <div [ngStyle]="{ 'display' : isGrid ? 'grid' : 'none' }" class="col-12">
       <div class="row">
         <div class="container col-3" *ngFor="let l of livres$ | async">
           <img [src]="l.image" alt="img" class="image" style="">
@@ -127,7 +129,8 @@
               <span><b>{{l.name}}</b></span><br>
               <span><b>De: </b>{{l.author}}</span><br>
               <span><b>Le :</b>{{l.publish_date | date: 'dd/MM/yyy'}}</span><br>
-              <span class="badge" [ngClass]="{'badge-success': l.status=='Disponible', 'badge-secondary': l.status=='Epuisé'}">{{l.status}}</span><br>
+              <span class="badge"
+                    [ngClass]="{'badge-success': l.status=='Disponible', 'badge-secondary': l.status=='Epuisé'}">{{l.status}}</span><br>
             </div>
           </div>
         </div>
@@ -135,44 +138,47 @@
     </div>
 
     <!--Table-->
-    <div *ngIf="!isGrid" class="col-12">
-      <p-table [value]="livres$ | async ">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>ISBN</th>
-            <th>Livre</th>
-            <th>Name</th>
-            <th>Author</th>
-            <th>Publish date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-livre>
-          <tr>
-            <td>{{livre.id}}</td>
-            <td>
-              <nz-avatar nz-popover [nzContent]="templ" [nzShape]="'circle'" [nzSize]="40"
-                         [nzSrc]="livre.image"></nz-avatar>
-              <ng-template #templ>
-                <nz-avatar [nzShape]="'square'" [nzSize]="350" [nzSrc]="livre.image"></nz-avatar>
-              </ng-template>
-            </td>
-            <td>{{livre.name}}</td>
-            <td>{{livre.author}}</td>
-            <td>{{livre.publish_date | date: 'dd/MM/yyy'}}</td>
-            <td [ngStyle]="{'color' : livre.status =='Disponible' ? 'green' : 'red'}"><b>{{livre.status}}</b></td>
-            <td style="text-align: center">
-              <a [routerLink]="['edit', livre.id]" nz-button nzType="default" style="margin: 2px"><i nz-icon type="edit"
-                                                                                                     theme="outline"></i></a>
-              <button (click)="deleteBook(livre.id)" nz-button nzType="danger" style="margin: 2px"><i nz-icon
-                                                                                                      type="delete"
-                                                                                                      theme="outline"></i>
-              </button>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
+    <!--<div *ngIf="!isGrid" class="col-12">-->
+    <div [ngStyle]="{ 'display' : !isGrid ? 'flex' : 'none' }" class="col-12">
+      <app-livres-table [livres$]="livres$ | async"></app-livres-table>
+      <!--<p-table [value]="livres$ | async ">-->
+      <!--<ng-template pTemplate="header">-->
+      <!--<tr>-->
+      <!--<th>ISBN</th>-->
+      <!--<th>Livre</th>-->
+      <!--<th>Name</th>-->
+      <!--<th>Author</th>-->
+      <!--<th>Publish date</th>-->
+      <!--<th>Status</th>-->
+      <!--<th>Actions</th>-->
+      <!--</tr>-->
+      <!--</ng-template>-->
+      <!--<ng-template pTemplate="body" let-livre>-->
+      <!--<tr>-->
+      <!--<td>{{livre.id}}</td>-->
+      <!--<td>-->
+      <!--<nz-avatar nz-popover [nzContent]="templ" [nzShape]="'circle'" [nzSize]="40"-->
+      <!--[nzSrc]="livre.image"></nz-avatar>-->
+      <!--<ng-template #templ>-->
+      <!--<nz-avatar [nzShape]="'square'" [nzSize]="350" [nzSrc]="livre.image"></nz-avatar>-->
+      <!--</ng-template>-->
+      <!--</td>-->
+      <!--<td>{{livre.name}}</td>-->
+      <!--<td>{{livre.author}}</td>-->
+      <!--<td>{{livre.publish_date | date: 'dd/MM/yyy'}}</td>-->
+      <!--<td [ngStyle]="{'color' : livre.status =='Disponible' ? 'green' : 'red'}"><b>{{livre.status}}</b></td>-->
+      <!--<td style="text-align: center">-->
+      <!--<a [routerLink]="['edit', livre.id]" nz-button nzType="default" style="margin: 2px"><i nz-icon type="edit"-->
+      <!--theme="outline"></i></a>-->
+      <!--<button (click)="deleteBook(livre.id)" nz-button nzType="danger" style="margin: 2px"><i nz-icon-->
+      <!--type="delete"-->
+      <!--theme="outline"></i>-->
+      <!--</button>-->
+      <!--</td>-->
+      <!--</tr>-->
+      <!--</ng-template>-->
+      <!--</p-table>-->
     </div>
+
   </div>
 </div>
