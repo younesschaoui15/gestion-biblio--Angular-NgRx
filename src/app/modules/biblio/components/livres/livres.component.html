@@ -117,11 +117,11 @@
 
           <!-- /** Uploaded image **/ -->
           <nz-form-item>
-            <nz-form-control>
+            <nz-form-control> <!--nzAction="https://jsonplaceholder.typicode.com/posts/"-->
               <nz-upload formControlName="image" name="image" class="avatar-uploader"
                          nzName="avatar"
                          nzListType="picture-card"
-                         nzAction="https://jsonplaceholder.typicode.com/posts/"
+                         [nzAction]="urlAction"
                          [nzBeforeUpload]="onBeforeUpload"
                          [nzShowUploadList]="false"
                          (nzChange)="onChange($event)">

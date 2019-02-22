@@ -16,7 +16,7 @@ export class LivresComponent implements OnInit, OnDestroy {
 
   loading = false;
   avatarUrl: string;
-
+  urlAction = '';
   isDrawerVisible = false;
   isLoadingOne = false;
   newLivre: Livre = {id: '', name: '', author: '', publish_date: '', image: '', status: ''};
@@ -37,6 +37,7 @@ export class LivresComponent implements OnInit, OnDestroy {
     this.biblioServices.livresSubject.subscribe(data => console.log('BOOKS', data));
 
     this.initAddLivreForm();
+    this.urlAction = this.biblioServices.booksRef
   }
 
   ngOnDestroy(): void {
@@ -123,8 +124,10 @@ export class LivresComponent implements OnInit, OnDestroy {
 
   onBeforeUpload = (file: File) => {
     console.log('FILE, before upload...', file);
+    console.log('FILE, URL...', this.biblioServices.booksRef);
+
     return true;
-  }
+  };
 
   onChange(info: { file: UploadFile }): void {
     if (info.file.status === 'uploading') {

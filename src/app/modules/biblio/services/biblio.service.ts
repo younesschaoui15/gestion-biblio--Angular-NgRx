@@ -12,7 +12,7 @@ import {UploadFile} from 'ng-zorro-antd';
 export class BiblioService {
 
   livresSubject = new Subject();
-
+  public booksRef = firebase.storage().ref().child('images/books');
   livres: Livre[] = [
     {
       id: '10:0373441819', name: 'My Lovely Wife', author: 'Samantha Downing', publish_date: '03-26-2019', status: 'Epuisé',
@@ -67,8 +67,7 @@ export class BiblioService {
   uploadImage(file: UploadFile) {
     console.log('File arrived : ', file.filename);
     const task: firebase.storage.UploadTask = undefined;
-    const booksRef = firebase.storage().ref().child('images/books');
-    const uploadTask = booksRef.put(file.thumbUrl);
+    const uploadTask = this.booksRef.put(file.thumbUrl);
     // uploadTask.snapshotChanges().subscribe(
     //   (data) => console.log('loading...', data),
     //   (data) => console.log('Erreur', data),
