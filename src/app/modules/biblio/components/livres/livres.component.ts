@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {NzMessageService} from 'ng-zorro-antd';
+import {NzMessageService, UploadFile} from 'ng-zorro-antd';
 import {Livre} from '../../models/livre';
 import {BiblioService} from '../../services/biblio.service';
 import {BiblioStoreService} from '../../services/biblio-store.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as BiblioValidators from '../../validators/biblio.validators';
-import {Observable} from 'rxjs';
+import {Observable, Observer} from 'rxjs';
 
 @Component({
   selector: 'app-livres',
@@ -13,6 +13,9 @@ import {Observable} from 'rxjs';
   styleUrls: ['./livres.component.css']
 })
 export class LivresComponent implements OnInit, OnDestroy {
+
+  loading = false;
+  avatarUrl: string;
 
   isDrawerVisible = false;
   isLoadingOne = false;
@@ -53,7 +56,7 @@ export class LivresComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.biblioStoreServices.addLivre(this.addLivreForm.value);
+    // this.biblioStoreServices.addLivre(this.addLivreForm.value);
 
     this.msg.create('success', 'A new book was added successfully');
     setTimeout(() => {
@@ -72,9 +75,10 @@ export class LivresComponent implements OnInit, OnDestroy {
   openNewBookDrawer() {
     this.isDrawerVisible = true;
   }
+
   closeNewBookDrawer() {
     this.isDrawerVisible = false;
-    this.addLivreForm.reset({name: '', password: {coPw: ''}});
+    this.addLivreForm.reset({name: '', image: '', password: {coPw: ''}});
   }
 
   onChangeDate(result: Date): void {
@@ -82,7 +86,7 @@ export class LivresComponent implements OnInit, OnDestroy {
   }
 
   /* form with FormBuilder */
-  private initAddLivreForm() {
+  initAddLivreForm() {
     this.addLivreForm = this.formBuilder.group({
       id: ['', [Validators.required]],
       name: ['', [Validators.required, Validators.minLength(3), BiblioValidators.titleReg(/hhh/)]],
@@ -113,4 +117,27 @@ export class LivresComponent implements OnInit, OnDestroy {
     //   status: new FormControl()
     // });
   }
+
+
+  /* Upload image */
+
+  onBeforeUpload = (file: File) => {
+    console.log('FILE, before upload...', file);
+    return true;
+  }
+
+  onChange(info: { file: UploadFile }): void {
+    if (info.file.status === 'uploading') {
+      this.loading = true;
+      return;
+    }
+    if (info.file.status === 'done') {
+      console.log('FILE:', info.file);
+      this.loading = false;
+      this.avatarUrl = info.file.thumbUrl;
+    }
+
+    // this.biblioServices.uploadImage(info.file);
+  }
+
 }

@@ -15,9 +15,16 @@ import { EffectsModule } from '@ngrx/effects';
 import { BiblioEffects } from './store/biblio.effects';
 import { LivresTableComponent } from './components/livres-table/livres-table.component';
 import {CarTestService} from './services/car-test-service.service';
+import { Dir1Directive } from './directives/dir1.directive';
+import { Dir2Directive } from './directives/dir2.directive';
+import {environment} from '../../../environments/environment';
+import {AngularFireModule} from '@angular/fire';
+import {AngularFireAuthModule} from '@angular/fire/auth';
+import {AngularFireStorageModule, StorageBucket} from '@angular/fire/storage';
+import {AngularFirestoreModule} from '@angular/fire/firestore';
 
 @NgModule({
-  declarations: [BiblioComponent, LivresComponent, EditLivreComponent, LivresTableComponent],
+  declarations: [BiblioComponent, LivresComponent, EditLivreComponent, LivresTableComponent, Dir1Directive, Dir2Directive],
   imports: [
     CommonModule,
     BiblioRoutingModule,
@@ -28,7 +35,12 @@ import {CarTestService} from './services/car-test-service.service';
     StoreModule.forFeature('biblioModuleState', fromBiblioModule.BiblioReducer),
     /* 1st arg: this module state, 2nd arg: this module reducer */
     EffectsModule.forFeature([BiblioEffects]),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
+    AngularFireStorageModule,
+    AngularFireAuthModule,
   ],
-  providers: [BiblioService, CarTestService]
+  providers: [BiblioService, CarTestService, { provide: StorageBucket, useValue: 'gestion-livres-app.appspot.com' }],
+  exports: [Dir1Directive]
 })
 export class BiblioModule { }

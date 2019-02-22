@@ -1,10 +1,14 @@
 <div class="container-fluid col-11">
   <div class="row">
-    <div class="col-6">
+
+    <!--Add book button-->
+    <div class="col-6" appDir1>
       <button (click)="openNewBookDrawer()" nz-button nzType="default" style="margin-bottom: 10px">
         <i nz-icon type="plus-circle" theme="twotone"></i>New book
       </button>
     </div>
+
+    <!--Display filter-->
     <div class="col-6">
       <button (click)="isGrid=false" nz-button nzType="default" class="float-right">
         <i nz-icon type="profile" theme="twotone" class="align-middle"></i>
@@ -14,6 +18,7 @@
       </button>
     </div>
 
+    <!--Add new book drawer-->
     <nz-drawer [nzClosable]="false" [nzVisible]="isDrawerVisible" nzPlacement="right" nzTitle="New Book"
                (nzOnClose)="closeNewBookDrawer()">
       <div class="col-12">
@@ -28,8 +33,9 @@
             </nz-form-control>
             <!--<nz-form-explain *ngIf="addLivreForm.get('id').dirty && addLivreForm.get('id').errors">ID field is required!-->
             <div *ngIf="addLivreForm.get('id').invalid && addLivreForm.get('id').touched">
-              <small *ngIf="addLivreForm.get('id').errors?.required" class="text text-danger">ID field is required!
-              </small>
+              <nz-form-explain *ngIf="addLivreForm.get('id').errors?.required" class="text text-danger">ID field is
+                required!
+              </nz-form-explain>
             </div>
           </nz-form-item>
 
@@ -79,8 +85,21 @@
             </nz-form-control>
           </nz-form-item>
 
-          <!-- PASSWORD Group -->
+          <!-- /** Static image **/ -->
+          <!--<nz-form-item>-->
+          <!--<nz-form-control>-->
+          <!--<input-->
+          <!--[ngClass]="{'border border-danger' : addLivreForm.get('image').invalid && addLivreForm.get('image').touched}"-->
+          <!--formControlName="image" nz-input type="text" name="image" placeholder="Paste image URL here...">-->
+          <!--</nz-form-control>-->
+          <!--&lt;!&ndash;<nz-form-explain *ngIf="addLivreForm.get('id').dirty && addLivreForm.get('id').errors">ID field is required!&ndash;&gt;-->
+          <!--<div *ngIf="addLivreForm.get('image').invalid && addLivreForm.get('image').touched">-->
+          <!--&lt;!&ndash;<small *ngIf="addLivreForm.get('image').errors?.required" class="text text-danger">ID field is required!&ndash;&gt;-->
+          <!--&lt;!&ndash;</small>&ndash;&gt;-->
+          <!--</div>-->
+          <!--</nz-form-item>-->
 
+          <!-- /** PASSWORD Group **/ -->
           <!--<nz-form-item formGroupName="password">-->
           <!--<nz-form-control>-->
           <!--<input formControlName="pw" nz-input name="pw" type="password" placeholder="Password">-->
@@ -96,18 +115,24 @@
           <!--</div>-->
           <!--</nz-form-item>-->
 
-          <!-- Image -->
-
-          <!--<nz-form-item>-->
-          <!-- <nz-form-label [nzSpan]="6" nzFor="id">ID</nz-form-label> -->
-          <!--<nz-form-control>-->
-          <!--<nz-upload nzAction="https://jsonplaceholder.typicode.com/posts/">-->
-          <!--<button nz-button>-->
-          <!--<i nz-icon type="upload"></i><span>Click to Upload</span>-->
-          <!--</button>-->
-          <!--</nz-upload>-->
-          <!--</nz-form-control>-->
-          <!--</nz-form-item >-->
+          <!-- /** Uploaded image **/ -->
+          <nz-form-item>
+            <nz-form-control>
+              <nz-upload formControlName="image" name="image" class="avatar-uploader"
+                         nzName="avatar"
+                         nzListType="picture-card"
+                         nzAction="https://jsonplaceholder.typicode.com/posts/"
+                         [nzBeforeUpload]="onBeforeUpload"
+                         [nzShowUploadList]="false"
+                         (nzChange)="onChange($event)">
+                <ng-container *ngIf="!avatarUrl">
+                  <i nz-icon type="plus"></i>
+                  <div class="ant-upload-text">Upload book's image</div>
+                </ng-container>
+                <img *ngIf="avatarUrl" [src]="avatarUrl" class="avatar" style="width: 80px; height: 100px;">
+              </nz-upload>
+            </nz-form-control>
+          </nz-form-item>
 
           <div class="col-12">
             <button [disabled]="addLivreForm.invalid" nz-button nzType="primary" type="submit"
@@ -120,7 +145,7 @@
 
     <!--Grid-->
     <!--<div *ngIf="isGrid" class="col-12" align="center">-->
-    <div [ngStyle]="{ 'display' : isGrid ? 'grid' : 'none' }" class="col-12">
+    <div [hidden]="!isGrid" class="col-12">
       <div class="row">
         <div class="container col-3" *ngFor="let l of livres$ | async">
           <img [src]="l.image" alt="img" class="image" style="">
@@ -139,45 +164,9 @@
 
     <!--Table-->
     <!--<div *ngIf="!isGrid" class="col-12">-->
-    <div [ngStyle]="{ 'display' : !isGrid ? 'flex' : 'none' }" class="col-12">
+    <div [hidden]="isGrid" class="col-12">
       <app-livres-table [livres$]="livres$ | async"></app-livres-table>
-      <!--<p-table [value]="livres$ | async ">-->
-      <!--<ng-template pTemplate="header">-->
-      <!--<tr>-->
-      <!--<th>ISBN</th>-->
-      <!--<th>Livre</th>-->
-      <!--<th>Name</th>-->
-      <!--<th>Author</th>-->
-      <!--<th>Publish date</th>-->
-      <!--<th>Status</th>-->
-      <!--<th>Actions</th>-->
-      <!--</tr>-->
-      <!--</ng-template>-->
-      <!--<ng-template pTemplate="body" let-livre>-->
-      <!--<tr>-->
-      <!--<td>{{livre.id}}</td>-->
-      <!--<td>-->
-      <!--<nz-avatar nz-popover [nzContent]="templ" [nzShape]="'circle'" [nzSize]="40"-->
-      <!--[nzSrc]="livre.image"></nz-avatar>-->
-      <!--<ng-template #templ>-->
-      <!--<nz-avatar [nzShape]="'square'" [nzSize]="350" [nzSrc]="livre.image"></nz-avatar>-->
-      <!--</ng-template>-->
-      <!--</td>-->
-      <!--<td>{{livre.name}}</td>-->
-      <!--<td>{{livre.author}}</td>-->
-      <!--<td>{{livre.publish_date | date: 'dd/MM/yyy'}}</td>-->
-      <!--<td [ngStyle]="{'color' : livre.status =='Disponible' ? 'green' : 'red'}"><b>{{livre.status}}</b></td>-->
-      <!--<td style="text-align: center">-->
-      <!--<a [routerLink]="['edit', livre.id]" nz-button nzType="default" style="margin: 2px"><i nz-icon type="edit"-->
-      <!--theme="outline"></i></a>-->
-      <!--<button (click)="deleteBook(livre.id)" nz-button nzType="danger" style="margin: 2px"><i nz-icon-->
-      <!--type="delete"-->
-      <!--theme="outline"></i>-->
-      <!--</button>-->
-      <!--</td>-->
-      <!--</tr>-->
-      <!--</ng-template>-->
-      <!--</p-table>-->
+
     </div>
 
   </div>

@@ -1,5 +1,5 @@
 <!-- Table -->
-<!--<p-table [value]="livres$">
+<p-table [value]="livres$">
   <ng-template pTemplate="header">
     <tr>
       <th>ISBN</th>
@@ -15,15 +15,15 @@
     <tr>
       <td>{{livre.id}}</td>
       <td>
-        <nz-avatar nz-popover [nzContent]="templ" [nzShape]="'circle'" [nzSize]="40"
+        <nz-avatar *ngIf="livre.image" nz-popover [nzContent]="templ" [nzShape]="'circle'" [nzSize]="40"
                    [nzSrc]="livre.image"></nz-avatar>
         <ng-template #templ>
-          <nz-avatar [nzShape]="'square'" [nzSize]="350" [nzSrc]="livre.image"></nz-avatar>
+          <nz-avatar style="height: 60vh; width: 30vw;" [nzShape]="'square'" [nzSrc]="livre.image"></nz-avatar>
         </ng-template>
       </td>
       <td>{{livre.name}}</td>
       <td>{{livre.author}}</td>
-      <td>{{livre.publish_date | date: 'dd/MM/yyy'}}</td>
+      <td><span *ngIf="livre.publish_date">{{livre.publish_date | date: 'dd/MM/yyy'}}</span> </td>
       <td [ngStyle]="{'color' : livre.status =='Disponible' ? 'green' : 'red'}"><b>{{livre.status}}</b></td>
       <td style="text-align: center">
         <a [routerLink]="['edit', livre.id]" nz-button nzType="default" style="margin: 2px"><i nz-icon type="edit"
@@ -35,11 +35,12 @@
       </td>
     </tr>
   </ng-template>
-</p-table>-->
+</p-table>
 
 
 <!-- Test Table -->
 
+<!--
 <h3>Virtual Scroll - 250K Rows</h3>
 <p-table [columns]="cols" [value]="virtualCars" [scrollable]="true" [rows]="20" scrollHeight="400px"
          [virtualScroll]="true" (onLazyLoad)="loadDataOnScroll($event)" [resizableColumns]="true"
@@ -63,4 +64,5 @@
   </ng-template>
 
 </p-table>
+-->
 
